@@ -3,10 +3,12 @@
   <head>
     <title>JavaScript Storage Tutorial</title>
 
+    <!-- Referencing the stylesheet -->
     <link href="styles.css" rel="stylesheet">
   </head>
   <body>
 
+    <!-- Creating the table for printint the tweets -->
     <table>
       <thead>
         <th>
@@ -30,61 +32,85 @@
     </table>
 
     <script>
-
+      // Referencing the tweet table (body)
       const tweetsTable = document.getElementById("tweets-table");
 
-      var tweets = [
-        {
-          "id": 1,
-          "text": "Tweet 1",
-          "author": "Author 1",
-          "likes": 0
-        },
-        {
-          "id": 2,
-          "text": "Tweet 2",
-          "author": "Author 2",
-          "likes": 0
-        },
-        {
-          "id": 3,
-          "text": "Tweet 3",
-          "author": "Author 3",
-          "likes": 0
-        }
-      ];
+      // Creating the JSON array containing the tweets
+      // If array exists in local storage, it will be used
+      // If not, it will be created
+      var tweets;
+      if (!localStorage.tweets) {
+        tweets = [
+          {
+            "id": 1,
+            "text": "Tweet 1",
+            "author": "Author 1",
+            "likes": 0
+          },
+          {
+            "id": 2,
+            "text": "Tweet 2",
+            "author": "Author 2",
+            "likes": 0
+          },
+          {
+            "id": 3,
+            "text": "Tweet 3",
+            "author": "Author 3",
+            "likes": 0
+          }
+        ];
 
-      localStorage.setItem("tweets", JSON.stringify(tweets));
-
+        // Storing the tweets in the local storage
+        localStorage.setItem("tweets", JSON.stringify(tweets));
+      } else {
+        // Getting tweets from local storage
+        tweets = JSON.parse(localStorage.tweets);
+      }
+      
+      // Iterating tweet by tweet
       tweets.map(tweet => {
-
+        // Creating the row for each tweet
         let newTr = document.createElement("tr");
 
+        // Creating the id cell
         let newTdId = document.createElement("td");
         newTdId.innerHTML = tweet.id;
 
+        // Creating the text cell
         let newTdText = document.createElement("td");
         newTdText.innerHTML = tweet.text;
 
+        // Creating the author cell
         let newTdAuthor = document.createElement("td");
         newTdAuthor.innerHTML = tweet.author;
 
+        // Creating the num likes cell
         let newTdLikes = document.createElement("td");
-        newTdLikes.id = "numlikes" + tweet.id;
+        newTdLikes.id = "num-likes-" + tweet.id;
         newTdLikes.innerHTML = tweet.likes;
 
+        // Creating the add like button cell
         let newTdButton = document.createElement("td");
         let newButton = document.createElement("button");
-        newButton.id = tweet.id;
-        newButton.innerHTML = "Add Likes";
+        newButton.id = "add-like-" + tweet.id;
+        newButton.innerHTML = "Add Like";
 
+        // Attaching the click event listener to the button
         newButton.addEventListener("click", function(event) {
-          let id = event.srcElement.id;
+          let id = event.srcElement.id.replace("add-like-", "");
 
+          // Matching tweet with the id from the clicked button
           let myTweet = tweets.find(tweet => tweet.id == id);
+
+          // Incrementing the num likes
           myTweet.likes++;
 
-          document.getElementById("numlikes" + id).innerHTML = myTweet.likes;
+          // Updating the num likes cell
+          document.getElementById("num-likes-" + id).innerHTML = myTweet.likes;
+
+          // Updating the local storage
+          localStorage.setItem("tweets", JSON.stringify(tweets));
         });
 
         newTdButton.append(newButton);
