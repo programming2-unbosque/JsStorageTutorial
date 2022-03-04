@@ -3,11 +3,7 @@
   <head>
     <title>JavaScript Storage Tutorial</title>
 
-    <script>
-      table, th, td {
-        border: 1px solid;
-      }
-    </script>
+    <link href="styles.css" rel="stylesheet">
   </head>
   <body>
 
@@ -29,29 +25,79 @@
           Add Likes
         </th>
       </thead>
-      <tbody>
-        <tr>
-          <td>
-            1
-          </td>
-          <td>
-            This is a tweet from Elon Musk
-          </td>
-          <td>
-            Elon Musk
-          </td>
-          <td>
-            0
-          </td>
-          <td>
-            <button>Add like</button>
-          </td>
-        </tr>
+      <tbody id="tweets-table">
       </tbody>
     </table>
 
     <script>
 
+      const tweetsTable = document.getElementById("tweets-table");
+
+      var tweets = [
+        {
+          "id": 1,
+          "text": "Tweet 1",
+          "author": "Author 1",
+          "likes": 0
+        },
+        {
+          "id": 2,
+          "text": "Tweet 2",
+          "author": "Author 2",
+          "likes": 0
+        },
+        {
+          "id": 3,
+          "text": "Tweet 3",
+          "author": "Author 3",
+          "likes": 0
+        }
+      ];
+
+      localStorage.setItem("tweets", JSON.stringify(tweets));
+
+      tweets.map(tweet => {
+
+        let newTr = document.createElement("tr");
+
+        let newTdId = document.createElement("td");
+        newTdId.innerHTML = tweet.id;
+
+        let newTdText = document.createElement("td");
+        newTdText.innerHTML = tweet.text;
+
+        let newTdAuthor = document.createElement("td");
+        newTdAuthor.innerHTML = tweet.author;
+
+        let newTdLikes = document.createElement("td");
+        newTdLikes.id = "numlikes" + tweet.id;
+        newTdLikes.innerHTML = tweet.likes;
+
+        let newTdButton = document.createElement("td");
+        let newButton = document.createElement("button");
+        newButton.id = tweet.id;
+        newButton.innerHTML = "Add Likes";
+
+        newButton.addEventListener("click", function(event) {
+          let id = event.srcElement.id;
+
+          let myTweet = tweets.find(tweet => tweet.id == id);
+          myTweet.likes++;
+
+          document.getElementById("numlikes" + id).innerHTML = myTweet.likes;
+        });
+
+        newTdButton.append(newButton);
+
+        newTr.appendChild(newTdId);
+        newTr.appendChild(newTdText);
+        newTr.appendChild(newTdAuthor);
+        newTr.appendChild(newTdLikes);
+        newTr.appendChild(newTdButton);
+
+        tweetsTable.appendChild(newTr);
+
+      });
 
     </script>
   </body>
